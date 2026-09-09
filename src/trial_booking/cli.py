@@ -1,5 +1,4 @@
 import argparse
-import os
 
 from . import repositories as repo
 from .booking_service import availability, create_booking
@@ -104,11 +103,8 @@ def main(argv=None):
 
     args = parser.parse_args(argv)
 
-    if os.path.exists(args.db):
-        conn = _conn(args)
-    else:
-        conn = _conn(args)
-        create_schema(conn)
+    conn = _conn(args)
+    create_schema(conn)  # idempotent (IF NOT EXISTS)
 
     handlers = {
         "list": cmd_list,

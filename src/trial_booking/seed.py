@@ -30,6 +30,11 @@ SEED_PLAN = {
 
 
 def seed(conn):
+    # Idempotent: wipe existing rows (child-first, foreign keys on) then re-insert.
+    for table in ("payment_attempt", "seat_reservation", "booking", "trial_class",
+                  "student", "instructor", "parent"):
+        conn.execute(f"DELETE FROM {table}")
+
     parent_ids = [repo.insert_parent(conn, name, email) for name, email in SEED_PLAN["parents"]]
     student_ids = [repo.insert_student(conn, pid, name) for name, pid in SEED_PLAN["students"]]
     instructor_ids = [repo.insert_instructor(conn, name, subject, gender) for name, subject, gender in SEED_PLAN["instructors"]]

@@ -1,5 +1,5 @@
 SCHEMA_SQL = """
-CREATE TABLE parent (
+CREATE TABLE IF NOT EXISTS parent (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
@@ -7,7 +7,7 @@ CREATE TABLE parent (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE student (
+CREATE TABLE IF NOT EXISTS student (
     id INTEGER PRIMARY KEY,
     parent_id INTEGER NOT NULL REFERENCES parent(id),
     name TEXT NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE student (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE instructor (
+CREATE TABLE IF NOT EXISTS instructor (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     subject TEXT NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE instructor (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE trial_class (
+CREATE TABLE IF NOT EXISTS trial_class (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     instructor_id INTEGER NOT NULL REFERENCES instructor(id),
@@ -35,7 +35,7 @@ CREATE TABLE trial_class (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE booking (
+CREATE TABLE IF NOT EXISTS booking (
     id INTEGER PRIMARY KEY,
     student_id INTEGER NOT NULL REFERENCES student(id),
     class_id INTEGER NOT NULL REFERENCES trial_class(id),
@@ -44,7 +44,7 @@ CREATE TABLE booking (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE seat_reservation (
+CREATE TABLE IF NOT EXISTS seat_reservation (
     id INTEGER PRIMARY KEY,
     booking_id INTEGER NOT NULL UNIQUE REFERENCES booking(id),
     expires_at TEXT NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE seat_reservation (
     updated_at TEXT NOT NULL
 );
 
-CREATE TABLE payment_attempt (
+CREATE TABLE IF NOT EXISTS payment_attempt (
     id INTEGER PRIMARY KEY,
     booking_id INTEGER NOT NULL REFERENCES booking(id),
     card_number TEXT NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE payment_attempt (
     updated_at TEXT NOT NULL
 );
 
-CREATE UNIQUE INDEX idx_active_booking
+CREATE UNIQUE INDEX IF NOT EXISTS idx_active_booking
     ON booking(student_id, class_id)
     WHERE status IN ('pending_payment', 'confirmed');
 """
